@@ -100,6 +100,7 @@ builder.Services.AddAuthorization();
 // Register application services
 builder.Services.AddScoped<IEmailSender, DevEmailSender>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IStudySessionService, StudySessionService>();
 
 var app = builder.Build();
 
