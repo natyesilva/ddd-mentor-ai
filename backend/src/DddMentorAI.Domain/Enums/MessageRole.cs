@@ -1,7 +1,7 @@
 namespace DddMentorAI.Domain.Enums;
 
 /// <summary>
-/// Represents the role of a message in a study session.
+/// Papel/função da mensagem na conversa.
 /// </summary>
 public enum MessageRole
 {

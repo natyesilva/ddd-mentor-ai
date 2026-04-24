@@ -1,35 +1,36 @@
-using DddMentorAI.Application.DTOs.Requests;
+using DddMentorAI.Application.DTOs.Requests.StudySession;
+using DddMentorAI.Application.DTOs.Responses.StudySession;
 using DddMentorAI.Application.DTOs.Responses;
 
 namespace DddMentorAI.Application.Interfaces.Services;
 
 /// <summary>
-/// Interface for study session operations.
+/// Interface para operações de sessão de estudo.
 /// </summary>
 public interface IStudySessionService
 {
     /// <summary>
-    /// Creates a new study session for the authenticated user.
+    /// Cria uma nova sessão de estudo para o usuário autenticado.
     /// </summary>
     Task<ApiResponse<StudySessionResponse>> CreateAsync(string userId, CreateStudySessionRequest request);
 
     /// <summary>
-    /// Gets all study sessions for the authenticated user.
+    /// Lista todas as sessões do usuário autenticado.
     /// </summary>
     Task<ApiResponse<List<StudySessionResponse>>> GetAllAsync(string userId);
 
     /// <summary>
-    /// Gets a study session by ID for the authenticated user.
+    /// Obtém os detalhes de uma sessão específica do usuário autenticado.
     /// </summary>
     Task<ApiResponse<StudySessionDetailsResponse>> GetByIdAsync(string userId, Guid sessionId);
 
     /// <summary>
-    /// Gets all messages for a study session.
+    /// Lista todas as mensagens de uma sessão do usuário autenticado.
     /// </summary>
     Task<ApiResponse<List<MessageResponse>>> GetMessagesAsync(string userId, Guid sessionId);
 
     /// <summary>
-    /// Creates a new message in a study session.
+    /// Cria uma nova mensagem em uma sessão do usuário autenticado.
     /// </summary>
     Task<ApiResponse<MessageResponse>> CreateMessageAsync(string userId, Guid sessionId, CreateMessageRequest request);
 }

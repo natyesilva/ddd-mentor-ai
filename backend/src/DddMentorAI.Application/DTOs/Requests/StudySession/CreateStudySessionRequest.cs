@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using DddMentorAI.Domain.Enums;
 
-namespace DddMentorAI.Application.DTOs.Requests;
+namespace DddMentorAI.Application.DTOs.Requests.StudySession;
 
 /// <summary>
-/// Request model for creating a new study session.
+/// Request para criar uma nova sessão de estudo.
 /// </summary>
 public class CreateStudySessionRequest
 {
@@ -16,5 +17,5 @@ public class CreateStudySessionRequest
     public string Topic { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Level is required")]
-    public int Level { get; set; }
+    public StudyLevel Level { get; set; } = StudyLevel.Beginner;
 }

@@ -1,9 +1,9 @@
 using DddMentorAI.Domain.Enums;
 
-namespace DddMentorAI.Application.DTOs.Responses;
+namespace DddMentorAI.Application.DTOs.Responses.StudySession;
 
 /// <summary>
-/// Response model for a message.
+/// Response para uma mensagem.
 /// </summary>
 public class MessageResponse
 {

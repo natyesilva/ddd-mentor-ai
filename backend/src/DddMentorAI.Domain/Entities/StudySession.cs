@@ -3,18 +3,18 @@ using DddMentorAI.Domain.Enums;
 namespace DddMentorAI.Domain.Entities;
 
 /// <summary>
-/// Represents a study session in the DDD learning platform.
+/// Entidade que representa uma sessão de estudo sobre DDD.
 /// </summary>
 public class StudySession
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string UserId { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Topic { get; set; } = string.Empty;
-    public StudyLevel Level { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public StudyLevel Level { get; set; } = StudyLevel.Beginner;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    // Navigation properties
+    // Navigation property
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 }

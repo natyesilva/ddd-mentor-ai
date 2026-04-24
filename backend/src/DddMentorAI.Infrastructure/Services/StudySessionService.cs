@@ -1,5 +1,6 @@
-using DddMentorAI.Application.DTOs.Requests;
+using DddMentorAI.Application.DTOs.Requests.StudySession;
 using DddMentorAI.Application.DTOs.Responses;
+using DddMentorAI.Application.DTOs.Responses.StudySession;
 using DddMentorAI.Application.Interfaces.Services;
 using DddMentorAI.Domain.Entities;
 using DddMentorAI.Domain.Enums;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace DddMentorAI.Infrastructure.Services;
 
 /// <summary>
-/// Implementation of study session service.
+/// Implementação do serviço de sessões de estudo.
 /// </summary>
 public class StudySessionService : IStudySessionService
 {
@@ -29,11 +30,10 @@ public class StudySessionService : IStudySessionService
         {
             var session = new StudySession
             {
-                Id = Guid.NewGuid(),
                 UserId = userId,
                 Title = request.Title,
                 Topic = request.Topic,
-                Level = (StudyLevel)request.Level,
+                Level = request.Level,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -84,7 +84,7 @@ public class StudySessionService : IStudySessionService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting study sessions");
+            _logger.LogError(ex, "Error retrieving study sessions");
             return ApiResponse<List<StudySessionResponse>>.ErrorResponse("An error occurred while retrieving study sessions");
         }
     }
@@ -94,38 +94,30 @@ public class StudySessionService : IStudySessionService
         try
         {
             var session = await _context.StudySessions
-                .Include(s => s.Messages.OrderBy(m => m.CreatedAt))
-                .FirstOrDefaultAsync(s => s.Id == sessionId && s.UserId == userId);
+                .Where(s => s.Id == sessionId && s.UserId == userId)
+                .Select(s => new StudySessionDetailsResponse
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Topic = s.Topic,
+                    Level = s.Level,
+                    CreatedAt = s.CreatedAt,
+                    UpdatedAt = s.UpdatedAt,
+                    MessageCount = s.Messages.Count
+                })
+                .FirstOrDefaultAsync();
 
             if (session == null)
             {
                 return ApiResponse<StudySessionDetailsResponse>.ErrorResponse("Study session not found");
             }
 
-            var response = new StudySessionDetailsResponse
-            {
-                Id = session.Id,
-                Title = session.Title,
-                Topic = session.Topic,
-                Level = session.Level,
-                CreatedAt = session.CreatedAt,
-                UpdatedAt = session.UpdatedAt,
-                Messages = session.Messages.Select(m => new MessageResponse
-                {
-                    Id = m.Id,
-                    StudySessionId = m.StudySessionId,
-                    Role = m.Role,
-                    Content = m.Content,
-                    CreatedAt = m.CreatedAt
-                }).ToList()
-            };
-
-            return ApiResponse<StudySessionDetailsResponse>.SuccessResponse(response);
+            return ApiResponse<StudySessionDetailsResponse>.SuccessResponse(session);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting study session details");
-            return ApiResponse<StudySessionDetailsResponse>.ErrorResponse("An error occurred while retrieving study session");
+            _logger.LogError(ex, "Error retrieving study session details");
+            return ApiResponse<StudySessionDetailsResponse>.ErrorResponse("An error occurred while retrieving study session details");
         }
     }
 
@@ -133,7 +125,7 @@ public class StudySessionService : IStudySessionService
     {
         try
         {
-            // Verify session belongs to user
+            // Verify that the session belongs to the user
             var sessionExists = await _context.StudySessions
                 .AnyAsync(s => s.Id == sessionId && s.UserId == userId);
 
@@ -159,7 +151,7 @@ public class StudySessionService : IStudySessionService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting messages");
+            _logger.LogError(ex, "Error retrieving messages");
             return ApiResponse<List<MessageResponse>>.ErrorResponse("An error occurred while retrieving messages");
         }
     }
@@ -168,7 +160,7 @@ public class StudySessionService : IStudySessionService
     {
         try
         {
-            // Verify session belongs to user
+            // Verify that the session belongs to the user
             var session = await _context.StudySessions
                 .FirstOrDefaultAsync(s => s.Id == sessionId && s.UserId == userId);
 
@@ -179,7 +171,6 @@ public class StudySessionService : IStudySessionService
 
             var message = new Message
             {
-                Id = Guid.NewGuid(),
                 StudySessionId = sessionId,
                 Role = MessageRole.User,
                 Content = request.Content,
@@ -188,7 +179,7 @@ public class StudySessionService : IStudySessionService
 
             _context.Messages.Add(message);
             
-            // Update session's UpdatedAt
+            // Update the session's UpdatedAt
             session.UpdatedAt = DateTime.UtcNow;
             
             await _context.SaveChangesAsync();

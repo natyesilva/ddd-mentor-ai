@@ -1,9 +1,9 @@
 using DddMentorAI.Domain.Enums;
 
-namespace DddMentorAI.Application.DTOs.Responses;
+namespace DddMentorAI.Application.DTOs.Responses.StudySession;
 
 /// <summary>
-/// Response model for study session details with messages.
+/// Response para detalhes de uma sessão de estudo.
 /// </summary>
 public class StudySessionDetailsResponse
 {
@@ -13,5 +13,5 @@ public class StudySessionDetailsResponse
     public StudyLevel Level { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public List<MessageResponse> Messages { get; set; } = new();
+    public int MessageCount { get; set; }
 }

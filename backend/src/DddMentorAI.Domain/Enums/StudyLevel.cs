@@ -1,7 +1,7 @@
 namespace DddMentorAI.Domain.Enums;
 
 /// <summary>
-/// Represents the difficulty level of a study session.
+/// Nível de conhecimento do usuário na sessão de estudo.
 /// </summary>
 public enum StudyLevel
 {

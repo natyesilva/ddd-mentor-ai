@@ -14,7 +14,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     {
     }
 
-    // Study Sessions
+    // DbSets for new entities
     public DbSet<StudySession> StudySessions { get; set; } = null!;
     public DbSet<Message> Messages { get; set; } = null!;
 
@@ -31,29 +31,31 @@ public class AppDbContext : IdentityDbContext<AppUser>
         // StudySession configuration
         builder.Entity<StudySession>(entity =>
         {
-            entity.ToTable("StudySessions");
-            entity.HasKey(s => s.Id);
-            entity.Property(s => s.Title).HasMaxLength(200).IsRequired();
-            entity.Property(s => s.Topic).HasMaxLength(500).IsRequired();
-            entity.Property(s => s.Level).HasConversion<int>();
-            entity.Property(s => s.UserId).HasMaxLength(450).IsRequired();
-            entity.HasIndex(s => s.UserId);
-            entity.HasMany(s => s.Messages)
-                  .WithOne(m => m.StudySession)
-                  .HasForeignKey(m => m.StudySessionId)
-                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).HasMaxLength(200).IsRequired();
+            entity.Property(e => e.Topic).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.UserId).HasMaxLength(450).IsRequired();
+            entity.Property(e => e.Level).HasConversion<int>();
+
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.UpdatedAt);
         });
 
         // Message configuration
         builder.Entity<Message>(entity =>
         {
-            entity.ToTable("Messages");
-            entity.HasKey(m => m.Id);
-            entity.Property(m => m.Content).IsRequired();
-            entity.Property(m => m.Role).HasConversion<int>();
-            entity.Property(m => m.StudySessionId).IsRequired();
-            entity.HasIndex(m => m.StudySessionId);
-            entity.HasIndex(m => m.CreatedAt);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Content).IsRequired();
+            entity.Property(e => e.Role).HasConversion<int>();
+            entity.Property(e => e.CreatedAt).HasColumnType("timestamp with time zone");
+
+            entity.HasIndex(e => e.StudySessionId);
+            entity.HasIndex(e => e.CreatedAt);
+
+            entity.HasOne(e => e.StudySession)
+                .WithMany(s => s.Messages)
+                .HasForeignKey(e => e.StudySessionId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
