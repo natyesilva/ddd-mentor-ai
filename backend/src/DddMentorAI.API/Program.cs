@@ -1,6 +1,11 @@
+using DddMentorAI.Application.Interfaces.Persistence;
+using DddMentorAI.Application.Interfaces.Queries;
 using DddMentorAI.Application.Interfaces.Services;
+using DddMentorAI.Application.Services;
+using DddMentorAI.Domain.Repositories;
 using DddMentorAI.Infrastructure.Data;
 using DddMentorAI.Infrastructure.Identity;
+using DddMentorAI.Infrastructure.Persistence;
 using DddMentorAI.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -106,6 +111,10 @@ builder.Services.AddAuthorization();
 // Register application services
 builder.Services.AddScoped<IEmailSender, DevEmailSender>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
+builder.Services.AddScoped<IStudySessionRepository, StudySessionRepository>();
+builder.Services.AddScoped<IStudySessionQueries, StudySessionQueries>();
 builder.Services.AddScoped<IStudySessionService, StudySessionService>();
 
 var app = builder.Build();

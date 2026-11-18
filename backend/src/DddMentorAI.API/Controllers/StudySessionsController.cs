@@ -30,7 +30,7 @@ public class StudySessionsController : ControllerBase
     public async Task<ActionResult<ApiResponse<List<StudySessionResponse>>>> GetAll()
     {
         var userId = GetUserId();
-        var result = await _studySessionService.GetAllAsync(userId);
+        var result = await _studySessionService.GetAllAsync(userId, HttpContext.RequestAborted);
 
         if (!result.Success)
         {
@@ -52,7 +52,7 @@ public class StudySessionsController : ControllerBase
         }
 
         var userId = GetUserId();
-        var result = await _studySessionService.CreateAsync(userId, request);
+        var result = await _studySessionService.CreateAsync(userId, request, HttpContext.RequestAborted);
 
         if (!result.Success)
         {
@@ -69,7 +69,7 @@ public class StudySessionsController : ControllerBase
     public async Task<ActionResult<ApiResponse<StudySessionDetailsResponse>>> GetById(Guid id)
     {
         var userId = GetUserId();
-        var result = await _studySessionService.GetByIdAsync(userId, id);
+        var result = await _studySessionService.GetByIdAsync(userId, id, HttpContext.RequestAborted);
 
         if (!result.Success)
         {
@@ -86,7 +86,7 @@ public class StudySessionsController : ControllerBase
     public async Task<ActionResult<ApiResponse<List<MessageResponse>>>> GetMessages(Guid id)
     {
         var userId = GetUserId();
-        var result = await _studySessionService.GetMessagesAsync(userId, id);
+        var result = await _studySessionService.GetMessagesAsync(userId, id, HttpContext.RequestAborted);
 
         if (!result.Success)
         {
@@ -108,7 +108,7 @@ public class StudySessionsController : ControllerBase
         }
 
         var userId = GetUserId();
-        var result = await _studySessionService.CreateMessageAsync(userId, id, request);
+        var result = await _studySessionService.CreateMessageAsync(userId, id, request, HttpContext.RequestAborted);
 
         if (!result.Success)
         {
