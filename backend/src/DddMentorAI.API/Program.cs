@@ -72,7 +72,13 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 // Configure JWT Authentication
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "DddMentorAI_SuperSecretKey_ForJwtTokenGeneration2024!";
+// A chave nunca fica no repositório: use user-secrets (dev) ou variável de ambiente Jwt__Key.
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey) || Encoding.UTF8.GetByteCount(jwtKey) < 32)
+{
+    throw new InvalidOperationException(
+        "Jwt:Key ausente ou com menos de 32 bytes. Configure com 'dotnet user-secrets set \"Jwt:Key\" \"<chave>\"' ou a variável Jwt__Key.");
+}
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "DddMentorAI";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "DddMentorAI";
 
