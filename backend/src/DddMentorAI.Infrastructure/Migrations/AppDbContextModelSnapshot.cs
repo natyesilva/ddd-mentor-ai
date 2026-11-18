@@ -25,7 +25,6 @@ namespace DddMentorAI.Infrastructure.Migrations
             modelBuilder.Entity("DddMentorAI.Domain.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
@@ -47,13 +46,12 @@ namespace DddMentorAI.Infrastructure.Migrations
 
                     b.HasIndex("StudySessionId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("DddMentorAI.Domain.Entities.StudySession", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -82,9 +80,11 @@ namespace DddMentorAI.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UpdatedAt");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("StudySessions", (string)null);
+                    b.ToTable("StudySessions");
                 });
 
             modelBuilder.Entity("DddMentorAI.Infrastructure.Identity.AppUser", b =>
@@ -293,13 +293,11 @@ namespace DddMentorAI.Infrastructure.Migrations
 
             modelBuilder.Entity("DddMentorAI.Domain.Entities.Message", b =>
                 {
-                    b.HasOne("DddMentorAI.Domain.Entities.StudySession", "StudySession")
+                    b.HasOne("DddMentorAI.Domain.Entities.StudySession", null)
                         .WithMany("Messages")
                         .HasForeignKey("StudySessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("StudySession");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

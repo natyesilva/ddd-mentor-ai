@@ -1,18 +1,30 @@
 using DddMentorAI.Domain.Enums;
+using DddMentorAI.Domain.ValueObjects;
 
 namespace DddMentorAI.Domain.Entities;
 
 /// <summary>
-/// Entidade que representa uma mensagem dentro de uma sessão de estudo.
+/// Mensagem de uma sessão de estudo. Só é criada pelo agregado <see cref="StudySession"/>.
 /// </summary>
 public class Message
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public Guid StudySessionId { get; set; }
-    public MessageRole Role { get; set; } = MessageRole.User;
-    public string Content { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    // Construtor exigido pelo EF Core.
+    private Message()
+    {
+    }
 
-    // Navigation property
-    public virtual StudySession? StudySession { get; set; }
+    internal Message(Guid studySessionId, MessageRole role, MessageContent content, DateTime createdAt)
+    {
+        Id = Guid.NewGuid();
+        StudySessionId = studySessionId;
+        Role = role;
+        Content = content;
+        CreatedAt = createdAt;
+    }
+
+    public Guid Id { get; private set; }
+    public Guid StudySessionId { get; private set; }
+    public MessageRole Role { get; private set; }
+    public MessageContent Content { get; private set; } = null!;
+    public DateTime CreatedAt { get; private set; }
 }

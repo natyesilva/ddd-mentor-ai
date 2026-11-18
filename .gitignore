@@ -1,0 +1,26 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+*.coverage
+
+# Node / Vite
+node_modules/
+dist/
+*.local
+
+# Ambiente e segredos
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+
+# Editores / SO
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db

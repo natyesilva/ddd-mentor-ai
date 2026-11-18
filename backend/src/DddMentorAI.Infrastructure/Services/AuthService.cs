@@ -219,7 +219,8 @@ public class AuthService : IAuthService
     private async Task<string> GenerateJwtTokenAsync(AppUser user)
     {
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "ThisIsASecretKeyForJwtTokenGeneration12345"));
+            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]
+                ?? throw new InvalidOperationException("Jwt:Key is not configured.")));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
